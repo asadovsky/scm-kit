@@ -5,7 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from common import check_for_required_tools, get_files_by_ext, maybe_run, run
+from .common import check_for_required_tools, get_files_by_ext, maybe_run, run
 
 
 def lint_code(all_files: bool) -> None:

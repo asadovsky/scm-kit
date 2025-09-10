@@ -3,7 +3,7 @@
 import subprocess
 import sys
 
-from common import check_for_required_tools, maybe_run, run
+from .common import check_for_required_tools, maybe_run, run
 
 
 def format_code() -> None:
