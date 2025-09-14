@@ -16,10 +16,10 @@ def maybe_run(cmd: list[str]) -> None:
 def check_for_required_tools() -> None:
     """Check that required tools are available, exit if not."""
     missing = []
-    if not shutil.which("uvx"):
-        missing.append("uvx")
     if not shutil.which("npx"):
         missing.append("npx")
+    if not shutil.which("uvx"):
+        missing.append("uvx")
     if missing:
         print(f"Error: Required tools not found: {', '.join(missing)}", file=sys.stderr)
         sys.exit(1)
@@ -36,8 +36,8 @@ def get_files_by_ext(ext: str, all_files: bool) -> set[str]:
         deleted = _git(["ls-files", "-d"])
         return files - deleted
     else:
-        # New or modified files relative to main branch, and untracked files.
-        changed = _git(["diff", "--name-only", "--diff-filter=d", "main"])
+        # New or modified files relative to current branch, and untracked files.
+        changed = _git(["diff", "--name-only", "--diff-filter=d"])
         changed = {x for x in changed if x.endswith(f".{ext}")}
         untracked = _git(["ls-files", "-o", "--exclude-standard", f"*.{ext}"])
         return changed | untracked
