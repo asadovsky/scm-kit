@@ -12,8 +12,7 @@ def lint_code(all_files: bool) -> None:
     if (Path.cwd() / "go.mod").exists():
         maybe_run(["go", "vet", "./..."])
     run(["npx", "prettier", "--check", "**/*.{html,md,yaml}"])
-    run(["npx", "biome", "check", "."])
-    run(["npx", "biome", "format", "--check", "."])
+    run(["npx", "@biomejs/biome", "check", "."])
     run(["uvx", "ruff", "check", "."])
     run(["uvx", "ruff", "format", "--check", "."])
     py_files = list(get_files_by_ext("py", all_files))

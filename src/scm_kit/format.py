@@ -9,8 +9,7 @@ from scm_kit.common import check_for_required_tools, maybe_run, run
 def format_code() -> None:
     maybe_run(["gofmt", "-s", "-w", "."])
     run(["npx", "prettier", "--write", "**/*.{html,md,yaml}"])
-    run(["npx", "biome", "check", "--apply", "."])
-    run(["npx", "biome", "format", "."])
+    run(["npx", "@biomejs/biome", "check", "--write", "."])
     run(["uvx", "ruff", "check", "--fix-only", "."])
     run(["uvx", "ruff", "format", "."])
 
