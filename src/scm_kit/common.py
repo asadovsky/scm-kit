@@ -37,7 +37,7 @@ def get_files_by_ext(ext: str, all_files: bool) -> set[str]:
         return files - deleted
     else:
         # New or modified files relative to current branch, and untracked files.
-        changed = _git(["diff", "--name-only", "--diff-filter=d"])
+        changed = _git(["diff", "--name-only", "--diff-filter=d", "HEAD"])
         changed = {x for x in changed if x.endswith(f".{ext}")}
         untracked = _git(["ls-files", "-o", "--exclude-standard", f"*.{ext}"])
         return changed | untracked
