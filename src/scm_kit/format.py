@@ -4,7 +4,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-from scm_kit.common import PRETTIER_EXTS, PRETTIER_GLOB, check_for_required_tools, has_files, maybe_run, run
+from scm_kit.common import (
+    PRETTIER_EXTS,
+    PRETTIER_GLOB,
+    check_for_required_tools,
+    has_files,
+    maybe_run,
+    run,
+)
 
 
 def format_code() -> None:

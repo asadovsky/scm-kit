@@ -26,13 +26,13 @@ uvx --from scm-kit scm-lint -a  # lint all files, not just changed
 
 ## What runs
 
-| Language/Files | Format | Lint |
-|---|---|---|
-| Go (`go.mod`) | `gofmt` | `go vet` |
-| JS/TS/CSS/JSON (`biome.json`) | Biome | Biome |
-| HTML, Markdown, YAML | Prettier | Prettier |
-| Python (`.py`) | Ruff (fix + format) | Ruff (check + format check), Pyright |
-| TypeScript (`tsconfig.json`) | — | `tsc --noEmit` |
+| Language/Files                | Format              | Lint                                 |
+| ----------------------------- | ------------------- | ------------------------------------ |
+| Go (`go.mod`)                 | `gofmt`             | `go vet`                             |
+| JS/TS/CSS/JSON (`biome.json`) | Biome               | Biome                                |
+| HTML, Markdown, YAML          | Prettier            | Prettier                             |
+| Python (`.py`)                | Ruff (fix + format) | Ruff (check + format check), Pyright |
+| TypeScript (`tsconfig.json`)  | —                   | `tsc --noEmit`                       |
 
 Tools are invoked via `npx` or `uvx`, so they don't need to be pre-installed.
 Go tools are optional — skipped if not on PATH.
@@ -54,9 +54,21 @@ Projects using scm-kit should include their own config files as needed:
   since it is slow on large codebases. All other linters check the full tree.
 - **`-a` / `--all-files`**: Pyright checks all files.
 
+## Development
+
+To test local changes before publishing, use the `dev-` Makefile targets. These
+run against the local source instead of the published package:
+
+```sh
+make dev-fmt       # format using local scm-kit
+make dev-lint      # lint using local scm-kit
+make dev-lint-all  # lint all files using local scm-kit
+```
+
 ## Publishing
 
 ```sh
+rm -rf dist
 uv build
 UV_PUBLISH_TOKEN=pypi-xxxxx uv publish
 ```

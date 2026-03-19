@@ -5,7 +5,14 @@ import shutil
 import sys
 from pathlib import Path
 
-from scm_kit.common import PRETTIER_EXTS, PRETTIER_GLOB, check_for_required_tools, get_files_by_ext, has_files, try_run
+from scm_kit.common import (
+    PRETTIER_EXTS,
+    PRETTIER_GLOB,
+    check_for_required_tools,
+    get_files_by_ext,
+    has_files,
+    try_run,
+)
 
 
 def lint_code(all_files: bool) -> list[str]:

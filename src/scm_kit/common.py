@@ -46,7 +46,10 @@ def has_files(*exts: str) -> bool:
     and will no-op if the files are actually gone.
     """
     for ext in exts:
-        if run(["git", "ls-files", "-c", "-o", "--exclude-standard", f"*.{ext}"], capture=True).stdout.strip():
+        if run(
+            ["git", "ls-files", "-c", "-o", "--exclude-standard", f"*.{ext}"],
+            capture=True,
+        ).stdout.strip():
             return True
     return False
 
