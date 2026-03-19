@@ -2,12 +2,25 @@ import shutil
 import subprocess
 import sys
 
+PRETTIER_EXTS = ("html", "md", "yaml", "yml")
+PRETTIER_GLOB = "**/*.{" + ",".join(PRETTIER_EXTS) + "}"
+
 
 def run(cmd: list[str], capture: bool = False) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, check=True, capture_output=capture, text=capture)
 
 
+def try_run(cmd: list[str]) -> bool:
+    """Run a command, returning True on success or False on failure."""
+    try:
+        run(cmd)
+        return True
+    except subprocess.CalledProcessError:
+        return False
+
+
 def maybe_run(cmd: list[str]) -> None:
+    """Run a command if the executable is on PATH, otherwise skip silently."""
     if not shutil.which(cmd[0]):
         return
     run(cmd)
@@ -25,7 +38,26 @@ def check_for_required_tools() -> None:
         sys.exit(1)
 
 
+def has_files(*exts: str) -> bool:
+    """Check if any files with the given extensions exist in the repo.
+
+    Includes tracked-but-deleted files, which is fine since this only gates
+    whether to invoke a tool against '.' — the tool scans the filesystem itself
+    and will no-op if the files are actually gone.
+    """
+    for ext in exts:
+        if run(["git", "ls-files", "-c", "-o", "--exclude-standard", f"*.{ext}"], capture=True).stdout.strip():
+            return True
+    return False
+
+
 def get_files_by_ext(ext: str, all_files: bool) -> set[str]:
+    """Return file paths with the given extension.
+
+    If all_files is True, returns all non-deleted files in the repo. Otherwise,
+    returns only files changed vs HEAD plus untracked files.
+    """
+
     def _git(cmd: list[str]) -> set[str]:
         stdout = run(["git"] + cmd, capture=True).stdout.strip()
         return set(stdout.splitlines()) if stdout else set()

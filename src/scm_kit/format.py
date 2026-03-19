@@ -2,16 +2,21 @@
 
 import subprocess
 import sys
+from pathlib import Path
 
-from scm_kit.common import check_for_required_tools, maybe_run, run
+from scm_kit.common import PRETTIER_EXTS, PRETTIER_GLOB, check_for_required_tools, has_files, maybe_run, run
 
 
 def format_code() -> None:
-    maybe_run(["gofmt", "-s", "-w", "."])
-    run(["npx", "prettier", "--write", "**/*.{html,md,yaml}"])
-    run(["npx", "@biomejs/biome", "check", "--write", "."])
-    run(["uvx", "ruff", "check", "--fix-only", "."])
-    run(["uvx", "ruff", "format", "."])
+    if (Path.cwd() / "go.mod").exists():
+        maybe_run(["gofmt", "-s", "-w", "."])
+    if has_files(*PRETTIER_EXTS):
+        run(["npx", "prettier", "--write", PRETTIER_GLOB])
+    if (Path.cwd() / "biome.json").exists():
+        run(["npx", "@biomejs/biome", "check", "--write", "."])
+    if has_files("py"):
+        run(["uvx", "ruff", "check", "--fix-only", "."])
+        run(["uvx", "ruff", "format", "."])
 
 
 def main() -> None:
