@@ -43,9 +43,14 @@ def lint_code(all_files: bool) -> list[str]:
         if not try_run(["uvx", "pyright"] + py_files):
             failures.append("pyright")
 
-    if (Path.cwd() / "tsconfig.json").exists():
-        if not try_run(["npx", "tsc", "--noEmit"]):
-            failures.append("tsc")
+    # Search for tsconfig.json in cwd and immediate subdirectories.
+    for tsconfig in [Path.cwd() / "tsconfig.json"] + sorted(
+        Path.cwd().glob("*/tsconfig.json")
+    ):
+        if tsconfig.exists():
+            if not try_run(["npx", "tsc", "--noEmit"], cwd=tsconfig.parent):
+                failures.append("tsc")
+            break
 
     return failures
 

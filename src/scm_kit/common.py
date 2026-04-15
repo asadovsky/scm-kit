@@ -1,19 +1,26 @@
 import shutil
 import subprocess
 import sys
+from pathlib import Path
 
 PRETTIER_EXTS = ("html", "md", "yaml", "yml")
 PRETTIER_GLOB = "**/*.{" + ",".join(PRETTIER_EXTS) + "}"
 
 
-def run(cmd: list[str], capture: bool = False) -> subprocess.CompletedProcess:
-    return subprocess.run(cmd, check=True, capture_output=capture, text=capture)
+def run(
+    cmd: list[str],
+    capture: bool = False,
+    cwd: Path | None = None,
+) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        cmd, check=True, capture_output=capture, text=capture, cwd=cwd
+    )
 
 
-def try_run(cmd: list[str]) -> bool:
+def try_run(cmd: list[str], cwd: Path | None = None) -> bool:
     """Run a command, returning True on success or False on failure."""
     try:
-        run(cmd)
+        run(cmd, cwd=cwd)
         return True
     except subprocess.CalledProcessError:
         return False
