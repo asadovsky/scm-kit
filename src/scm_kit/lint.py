@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import json
 import shutil
 import sys
 from pathlib import Path
@@ -48,7 +49,16 @@ def lint_code(all_files: bool) -> list[str]:
         Path.cwd().glob("*/tsconfig.json")
     ):
         if tsconfig.exists():
-            if not try_run(["npx", "tsc", "--noEmit"], cwd=tsconfig.parent):
+            # Use `tsc -b` for project-reference configs (files:[] + references).
+            try:
+                cfg = json.loads(tsconfig.read_text())
+            except (json.JSONDecodeError, OSError):
+                cfg = {}
+            if cfg.get("references"):
+                cmd = ["npx", "tsc", "-b", "--noEmit"]
+            else:
+                cmd = ["npx", "tsc", "--noEmit"]
+            if not try_run(cmd, cwd=tsconfig.parent):
                 failures.append("tsc")
             break
 
